@@ -1,1 +1,2 @@
 - [Stage 0 verification boundary](stage0-verification.md) — RLS fixtures use an explicit local database URL and never the managed connection.
+- [Local PostgreSQL verification](local-postgres-verification.md) — Docker client availability does not imply a usable daemon in this workspace.

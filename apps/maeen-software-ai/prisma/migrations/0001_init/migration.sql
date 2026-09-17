@@ -192,6 +192,7 @@ BEGIN
   ]
   LOOP
     EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', table_name);
+    EXECUTE format('ALTER TABLE %I FORCE ROW LEVEL SECURITY', table_name);
     EXECUTE format(
       'CREATE POLICY %I_tenant_isolation ON %I
        USING (
@@ -209,6 +210,7 @@ BEGIN
 END $$;
 
 ALTER TABLE "audit_logs" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "audit_logs" FORCE ROW LEVEL SECURITY;
 CREATE POLICY audit_logs_tenant_isolation ON "audit_logs"
   USING (
     (tenant_id IS NOT NULL AND tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid)

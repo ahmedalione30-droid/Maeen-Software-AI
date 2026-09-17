@@ -7,8 +7,8 @@
 - Node.js 20+
 - pnpm
 - Docker مع Docker Compose
-- `DATABASE_URL`
-- `RLS_TEST_DATABASE_URL` للاختبار المحلي فقط
+- `DATABASE_URL` لعمليات Prisma
+- `RLS_TEST_DATABASE_URL` محلي فقط لاختبارات العزل
 - `ENCRYPTION_KEY`
 - `POSTGRES_PASSWORD` عند تشغيل PostgreSQL المحلي
 
@@ -23,7 +23,7 @@ docker compose -f apps/maeen-software-ai/docker-compose.yml up -d
 
 الصورة المستخدمة هي `pgvector/pgvector:pg16`.
 
-بعد تشغيل القاعدة، عيّن `DATABASE_URL` و`RLS_TEST_DATABASE_URL` إلى قاعدة التطوير المحلية ثم نفّذ:
+بعد تشغيل القاعدة، عيّن `DATABASE_URL` و`RLS_TEST_DATABASE_URL` إلى قاعدة التطوير المحلية نفسها، ثم نفّذ:
 
 ```bash
 pnpm --filter @workspace/maeen-software-ai run db:generate
@@ -37,7 +37,7 @@ pnpm --filter @workspace/maeen-software-ai run test
 tests/rls/isolation.test.ts
 ```
 
-إذا لم تكن `RLS_TEST_DATABASE_URL` موجودة، يتم تخطي اختبار العزل بدلاً من استخدام قاعدة مُدارة أو إنتاجية.
+إذا لم تكن `DATABASE_URL` موجودة، يتم تخطي اختبار الاتصال بقاعدة البيانات بدلاً من ادعاء نجاحه.
 
 ## تشغيل التطبيق
 

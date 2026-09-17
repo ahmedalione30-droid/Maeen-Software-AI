@@ -3,9 +3,15 @@ import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { Client } from "pg";
 
-// Never run this destructive fixture test against the managed DATABASE_URL.
-// Use an explicitly local connection string only.
 const databaseUrl = process.env.RLS_TEST_DATABASE_URL;
+if (databaseUrl) {
+  const hostname = new URL(databaseUrl).hostname;
+  if (!["localhost", "127.0.0.1", "::1"].includes(hostname)) {
+    throw new Error(
+      "RLS_TEST_DATABASE_URL must point to a local PostgreSQL instance",
+    );
+  }
+}
 const shouldRun = Boolean(databaseUrl);
 
 describe("PostgreSQL tenant isolation", { skip: !shouldRun }, () => {
@@ -20,6 +26,9 @@ describe("PostgreSQL tenant isolation", { skip: !shouldRun }, () => {
     tenantB = randomUUID();
 
     await client.query("BEGIN");
+    await client.query(
+      "SELECT set_config('app.is_super_admin', 'true', true)",
+    );
     await client.query(
       "INSERT INTO tenants (id, name, slug, plan, status, updated_at) VALUES ($1, $2, $3, $4, $5, NOW()), ($6, $7, $8, $9, $10, NOW())",
       [
@@ -50,6 +59,9 @@ describe("PostgreSQL tenant isolation", { skip: !shouldRun }, () => {
   it("does not expose Tenant B rows from a Tenant A transaction", async () => {
     await client.query("BEGIN");
     await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantA]);
+    await client.query(
+      "SELECT set_config('app.is_super_admin', 'false', true)",
+    );
     const result = await client.query(
       "SELECT tenant_id, phone_number FROM contacts ORDER BY phone_number",
     );
@@ -65,6 +77,9 @@ describe("PostgreSQL tenant isolation", { skip: !shouldRun }, () => {
   it("rejects a cross-tenant insert", async () => {
     await client.query("BEGIN");
     await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantA]);
+    await client.query(
+      "SELECT set_config('app.is_super_admin', 'false', true)",
+    );
 
     await assert.rejects(
       client.query(
