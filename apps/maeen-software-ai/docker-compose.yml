@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: maeen-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: maeen
+      POSTGRES_USER: maeen
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in the environment}
+    ports:
+      - "5432:5432"
+    volumes:
+      - maeen_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U maeen -d maeen"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  maeen_postgres_data:

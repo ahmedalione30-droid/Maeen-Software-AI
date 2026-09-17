@@ -1,0 +1,1 @@
+- [Stage 0 verification boundary](stage0-verification.md) — RLS fixtures use an explicit local database URL and never the managed connection.

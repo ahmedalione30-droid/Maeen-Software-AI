@@ -1,0 +1,36 @@
+{
+  "name": "@workspace/maeen-software-ai",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/rls/isolation.test.ts",
+    "test:watch": "tsx --test --watch tests/rls/isolation.test.ts",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "next": "^15.5.25",
+    "pg": "^8.16.3",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "catalog:",
+    "@types/pg": "^8.15.5",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "prisma": "^6.16.2",
+    "tailwindcss": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "^5.9.3"
+  }
+}
